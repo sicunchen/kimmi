@@ -1,0 +1,37 @@
+{
+    "arlington": {
+        "site_name":"Arlington,TX",
+        "map_center": [-97.115, 32.732],
+        "map_zoom": 14.5,
+        "tileset_src": "sdi-mapbox.ckme5z5al3t7k20pb5qkda3nz-72ke0",
+        "tileset_layer_name": "Arlington_Route_ODS_Autonomy_Hea"
+    },
+    "ann_arbor": {
+        "site_name":"Ann Arbor, MI",
+        "map_center": [-83.7430, 42.2742],
+        "map_zoom": 13.1,
+        "tileset_src": "sdi-mapbox.cktkh2xjg35hf21no6pdii20j-9ulm0",
+        "tileset_layer_name": "ARB_Route_ODS_Autonomy_Heatmap"    
+    },
+    "grmn": {
+        "site_name":"Grand Rapids, MN",
+        "map_center": [-93.5351, 47.2341],
+        "map_zoom": 12.1,
+        "tileset_src": "sdi-mapbox.cl82vecp604ct29nyzdiv59vb-2phur",
+        "tileset_layer_name": "GRMN_Route_ODS_Autonomy_Heatmap"   
+    },
+    "sun_city": {
+        "site_name":"Sun City, AZ",
+        "map_center": [-112.2718, 33.5975],
+        "map_zoom": 12.1,
+        "tileset_src": null,
+        "tileset_layer_name": null  
+    },
+    "north_america":{
+        "site_name":"North America",
+        "map_center": [-98, 38.88],
+        "map_zoom":3.5,
+        "tileset_src": null,
+        "tileset_layer_name": null  
+    }
+}
