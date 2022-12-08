@@ -7,6 +7,6 @@ export const SITE_BUTTONS = {
   [ANN_ARBOR]: "Ann Arbor, MI",
   [ARLINGTON]: "Arlington, TX",
   [GRAND_RAPIDS]: "Grand Rapids, MN",
-  [SUN_CITY]: "Sun City, AZ",
+  // [SUN_CITY]: "Sun City, AZ",
   [NORTH_AMERICA]: "North America",
 };

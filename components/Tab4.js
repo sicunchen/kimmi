@@ -292,7 +292,7 @@ export default function Tab4() {
           </div>
         </div>
       </div>
-      <div style={{ height: "500px", marginBottom: "200px" }}>
+      <div style={{ height: "400px", marginBottom: "100px" }}>
         {rawDailyAutonomyMetricsData && (
           <ParentSize>
             {({ width, height }) => {
