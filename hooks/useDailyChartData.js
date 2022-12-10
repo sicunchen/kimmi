@@ -1,10 +1,10 @@
 import fetcher from "../utils/fetcher";
 import useSWR from "swr";
-import { timeDay } from "d3-time";
+import { timeDay, timeMonth, timeWeek, timeYear } from "d3-time";
 import { timeParse, timeFormat } from "d3-time-format";
 import { flatGroup, flatRollup, sum, index, mean, ascending } from "d3-array";
-import { NORTH_AMERICA, SUN_CITY } from "../constants/sites";
-import { COMMERCIAL, DRIVER_OUT_READY } from "../constants/shiftCategories";
+import { NORTH_AMERICA } from "../constants/sites";
+import { COMMERCIAL } from "../constants/shiftCategories";
 import { format } from "d3-format";
 import { SHIFT_FILTER, SITE_FILTER } from "../constants/filters";
 export default function useDailyChartData() {
@@ -203,4 +203,24 @@ export function formatDatePicker(date) {
 
 export function parseDatePicker(val) {
   return timeParse("%Y-%m-%d")(val);
+}
+
+export function multiDateFormat(date) {
+  // define tick formats
+  const fmtHour = timeFormat("%I%p");
+  const fmtDay = timeFormat("%a %e");
+  const fmtWeek = timeFormat("%b %e");
+  const fmtMonth = timeFormat("%b");
+  const fmtYear = timeFormat("%Y");
+  return (
+    timeDay(date) < date
+      ? fmtHour
+      : timeMonth(date) < date
+      ? timeWeek(date) < date
+        ? fmtDay
+        : fmtWeek
+      : timeYear(date) < date
+      ? fmtMonth
+      : fmtYear
+  )(date).replace("PM", "pm");
 }

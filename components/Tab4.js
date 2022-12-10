@@ -234,13 +234,7 @@ export default function Tab4() {
     <div className="d-flex flex-column vh-100">
       <div id="manual">
         <div className="text-center">
-          <h1 className="text-primary">UNDERSTANDING MANUAL INTERVENTIONS</h1>
-          <h5>
-            Manual interventions occur for a variety of reasons. Our routes have
-            a variety of different autonomy levels due to a span of reasons,
-            including areas with a lot of foot traffic, weather (e.g. light
-            rain), and tailgating.
-          </h5>
+          <h1 className="text-primary">Dashboard</h1>
         </div>
         <div className="d-flex justify-content-center align-items-center mt-3 mb-3">
           <div className="me-2">Filter the chart by:</div>
@@ -290,6 +284,7 @@ export default function Tab4() {
               onChange={handleChangeWindow}
             />
           </div>
+          <div className="form-label ms-3">{movingAverageWindow} days</div>
         </div>
       </div>
       <div style={{ height: "400px", marginBottom: "100px" }}>

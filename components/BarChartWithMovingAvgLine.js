@@ -4,7 +4,11 @@ import { AxisBottom, AxisRight } from "@visx/axis";
 import { LinePath } from "@visx/shape";
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
-import { formatDecimal, formatDate } from "../hooks/useDailyChartData";
+import {
+  formatDecimal,
+  formatDate,
+  multiDateFormat,
+} from "../hooks/useDailyChartData";
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -44,13 +48,15 @@ export default function AutomonyMetricBarChart({
           return (
             <motion.rect
               initial={false}
-              animate={{
-                y: barY,
-                height: barHeight,
-              }}
+              // animate={{
+              //   y: barY,
+              //   height: barHeight,
+              // }}
               transition={{ duration: 0.5 }}
               width={barWidth}
               x={barX}
+              y={barY}
+              height={barHeight}
               fill="#00bcee"
               key={`bar-${i}`}
               onMouseMove={(e) => {
@@ -87,7 +93,7 @@ export default function AutomonyMetricBarChart({
             );
           }}
         </LinePath>
-        <AxisBottom scale={xScale} top={yMax} />
+        <AxisBottom scale={xScale} top={yMax} tickFormat={multiDateFormat} />
         {tooltipOpen && tooltipData && (
           <TooltipInPortal top={tooltipTop} left={tooltipLeft}>
             <div>

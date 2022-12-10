@@ -270,7 +270,7 @@ export default function AutonomyMetricsWithBrush({
       </div>
       <div className="d-flex justify-content-center">
         <p className="h4 me-3">{sumKmpiValue} km/I</p>
-        <p className="h4 me-3">{sumAutonomousKm} km</p>
+        <p className="h4 me-3">{sumAutonomousKm} autonomous km</p>
         <p className="h4">
           {sumInterventions}{" "}
           {renderInterventionTitle(interventionType, checkedExclusions)}
