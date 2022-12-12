@@ -14,9 +14,7 @@ export default function Nav() {
       </li>
       <li className="nav-item">
         <Link href="#kpi" scroll={false}>
-          <a className="nav-link" href="https://kimmi.onrender.com/">
-            KPI
-          </a>
+          <a className="nav-link">KPI</a>
         </Link>
       </li>
       <li className="nav-item">

@@ -53,7 +53,7 @@ export function processCSV(line) {
   ] = line.split(/,/);
   return {
     site,
-    date: timeParse("%Y-%m-%d")(date),
+    date: parseDatePicker(date),
     shiftCategory: shift_category,
     distanceAutonomous: +distance_autonomous,
     distance: +distance,
@@ -174,7 +174,6 @@ export function updateAutonomyMetric(dateRange, dailyAutonomyMetricsData) {
   const data = dailyAutonomyMetricsData
     .filter((d) => dateRange[0] <= d.date && d.date <= dateRange[1])
     .filter((d) => d.opacity === 1);
-
   const sumAutonomousKm = formatDecimal(sum(data, (d) => d.autonomousKm));
   const sumInterventions = sum(data, (d) => d.interventions);
   const sumKmpiValue = formatAutonomyMetric(sumAutonomousKm / sumInterventions);

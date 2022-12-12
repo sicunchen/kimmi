@@ -33,7 +33,7 @@ const accentColor = "#FF9C17";
 const chartSeparation = 20;
 const filterByDate = (data, start, end) => {
   return data.filter((d) => {
-    return d.date > start && d.date < end;
+    return d.date >= start && d.date <= end;
   });
 };
 
@@ -87,7 +87,7 @@ export default function AutonomyMetricsWithBrush({
     top: 20,
     left: 20,
     bottom: 20,
-    right: 20,
+    right: 30,
   },
 }) {
   //dimenstion
@@ -125,16 +125,11 @@ export default function AutonomyMetricsWithBrush({
     filterValues,
     serviceDates
   );
-  const start = timeDay.offset(
-    max(serviceDates, (d) => d.date),
-    -7
-  );
-  const end = timeDay.offset(
-    max(serviceDates, (d) => d.date),
-    1
-  );
-  const brushRef = useRef(null);
 
+  const end = max(serviceDates, (d) => d.date);
+
+  const start = timeDay.offset(end, -29);
+  const brushRef = useRef(null);
   const [dateRange, setDateRange] = useState({
     start: "",
     end: "",
@@ -191,8 +186,8 @@ export default function AutonomyMetricsWithBrush({
   const onBrushChange = (domain) => {
     if (!domain) return;
     const { x0, x1 } = domain;
-    const newStart = timeHour.offset(new Date(x0), 12);
-    const newEnd = timeHour.offset(new Date(x1), 12);
+    const newStart = timeDay(timeHour.offset(new Date(x0), 12));
+    const newEnd = timeDay(timeHour.offset(new Date(x1), -12));
     setBrushDomain([newStart, newEnd]);
   };
 
@@ -307,10 +302,12 @@ export default function AutonomyMetricsWithBrush({
           numTicksRows={3}
           top={margin.top + legendHeight + legendBottomMarin}
           strokeWidth={2}
+          left={margin.left}
         />
         <BarChartWithMovingAvgLine
           data={filteredData}
           top={margin.top + legendHeight + legendBottomMarin}
+          left={margin.left}
           xMax={xMax}
           xScale={xScale}
           yMax={yMax}
@@ -325,6 +322,7 @@ export default function AutonomyMetricsWithBrush({
             topChartHeight +
             topChartBottomMargin
           }
+          left={margin.left}
           xMax={xBrushMax}
           xScale={brushXScale}
           yMax={yBrushMax}
@@ -344,7 +342,7 @@ export default function AutonomyMetricsWithBrush({
             height={yBrushMax}
             initialBrushPosition={{
               start: { x: brushXScale(brushDomain[0]) },
-              end: { x: brushXScale(brushDomain[1]) },
+              end: { x: brushXScale(timeDay.offset(end, 1)) },
             }}
             margin={brushMargin}
             onChange={onBrushChange}
