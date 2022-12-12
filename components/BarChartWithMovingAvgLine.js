@@ -120,8 +120,8 @@ export default function AutomonyMetricBarChart({
           <TooltipInPortal top={tooltipTop} left={tooltipLeft}>
             <div>
               <h6>{formatDate(tooltipData.date)}</h6>
-              <p>km/I: {formatDecimal(tooltipData.kmpi)}</p>
               <p>moving average: {formatDecimal(tooltipData.avg)}</p>
+              <p>km/I: {formatDecimal(tooltipData.kmpi)}</p>
               <p>autonomous km: {formatDecimal(tooltipData.autonomousKm)}</p>
               <p>interventions: {tooltipData.interventions}</p>
             </div>
