@@ -58,10 +58,6 @@ export default function AutomonyMetricBarChart({
     <svg width={width} ref={containerRef}>
       <Group top={top} left={left}>
         {data.map((d) => {
-          if (isNaN(d.metric)) {
-            console.log(d.date, d.metric);
-            console.log(yScale(d.metric));
-          }
           const barX = xScale(timeHour.offset(d.date));
           const barY = yScale(d.metric);
           const barWidth =
