@@ -62,7 +62,8 @@ function getYDomain(metricsData) {
     0,
     Math.max(
       0.6,
-      max(metricsData, (d) => d.kmpi)
+      max(metricsData, (d) => d.kmpi),
+      max(metricsData, (d) => d.avg)
     ),
   ];
 }
@@ -210,7 +211,10 @@ export default function AutonomyMetricsWithBrush({
   );
 
   const { sumAutonomousKm, sumInterventions, sumKmpiValue } =
-    updateAutonomyMetric([start, end], dailyAutonomyMetricsData);
+    updateAutonomyMetric(
+      [brushDomain[0], brushDomain[1]],
+      dailyAutonomyMetricsData
+    );
 
   const renderTitle = (activeFilter) => {
     return activeFilter === SITE_FILTER
@@ -233,7 +237,7 @@ export default function AutonomyMetricsWithBrush({
   return (
     <div>
       <div className="d-flex justify-content-center align-items-center mb-3">
-        <div className="me-2">Pick the dates:</div>
+        <div className="me-2">Pick date range:</div>
         <div className="me-3">
           <input
             id="start"
@@ -306,6 +310,7 @@ export default function AutonomyMetricsWithBrush({
         />
         <BarChartWithMovingAvgLine
           data={filteredData}
+          ß
           top={margin.top + legendHeight + legendBottomMarin}
           left={margin.left}
           xMax={xMax}

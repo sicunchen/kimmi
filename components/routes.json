@@ -22,10 +22,10 @@
     },
     "sun_city": {
         "site_name":"Sun City, AZ",
-        "map_center": [-112.2718, 33.5975],
-        "map_zoom": 12.1,
-        "tileset_src": null,
-        "tileset_layer_name": null  
+        "map_center": [-112.2718, 33.62],
+        "map_zoom": 12.5,
+        "tileset_src": "sdi-mapbox.clbb53snb1nd027qrecdr86fj-8fwe8",
+        "tileset_layer_name": "Sun_City_Fixed_Route_Autonomy_He"  
     },
     "north_america":{
         "site_name":"North America",

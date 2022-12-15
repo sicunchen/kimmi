@@ -84,7 +84,7 @@ export default function Tab4() {
   };
 
   const ShiftFilters = () => (
-    <div className="d-flex justify-content-center align-items-center mt-3 mb-3">
+    <div className="d-flex align-items-center ms-3">
       <div className="me-2">Select a shift category:</div>
       <div
         className="btn-group"
@@ -116,7 +116,7 @@ export default function Tab4() {
     </div>
   );
   const SiteFilters = () => (
-    <div className="d-flex justify-content-center align-items-center mb-3">
+    <div className="d-flex align-items-center ms-3">
       <div className="me-2">Select a site:</div>
       <div className="btn-group" role="group" aria-label="site buttons">
         {Object.entries(SITE_BUTTONS).map(([key, val]) => {
@@ -181,7 +181,7 @@ export default function Tab4() {
     return (
       <div className="d-flex justify-content-center align-items-center mb-3">
         <div className="me-2">
-          Exclude these types of interventions from total Interventions:
+          Exclude these interventions from total interventions:
         </div>
         <div
           className="btn-group"
@@ -192,7 +192,10 @@ export default function Tab4() {
             return (
               <Fragment key={key}>
                 <input
-                  disabled={key === INTERVENTIONS_PARKING_LOT && true}
+                  disabled={
+                    key === INTERVENTIONS_PARKING_LOT ||
+                    interventionType !== INTERVENTIONS_TOTAL
+                  }
                   className="btn-check"
                   type="checkbox"
                   value={key}
@@ -212,17 +215,6 @@ export default function Tab4() {
           })}
         </div>
       </div>
-    );
-  };
-  const renderFilters = (activeFilter) => {
-    return (
-      <Fragment>
-        {activeFilter === SHIFT_FILTER ? <ShiftFilters /> : <SiteFilters />}
-        <InterventionFilters />
-        {interventionType === INTERVENTIONS_TOTAL && (
-          <ExcludeInterventionsFilters />
-        )}
-      </Fragment>
     );
   };
 
@@ -268,8 +260,10 @@ export default function Tab4() {
               Site
             </label>
           </div>
+          {activeFilter === SHIFT_FILTER ? <ShiftFilters /> : <SiteFilters />}
         </div>
-        {renderFilters(activeFilter)}
+        <InterventionFilters />
+        <ExcludeInterventionsFilters />
         <div className="d-flex justify-content-center align-items-center mb-3">
           <label htmlFor="movingAvgDays" className="form-label me-2">
             Moving Average Window (range between 2-100):
@@ -287,7 +281,7 @@ export default function Tab4() {
           <div className="form-label ms-3">{movingAverageWindow} days</div>
         </div>
       </div>
-      <div style={{ height: "400px", marginBottom: "100px" }}>
+      <div style={{ height: "400px", marginBottom: "150px" }}>
         {rawDailyAutonomyMetricsData && (
           <ParentSize>
             {({ width, height }) => {

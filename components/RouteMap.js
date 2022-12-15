@@ -24,6 +24,8 @@ export default function RouteMap({ selectedSite, mapStyle }) {
   const map = useRef(null);
   const generateRouteColor = (routeData) => {
     const defaultColor = "royalblue";
+    if (selectedSite === SUN_CITY) return defaultColor;
+
     let matchExpression = ["match", ["get", "segment_id"]];
 
     for (const [segmentId, pct] of Object.entries(routeData)) {
@@ -103,10 +105,9 @@ export default function RouteMap({ selectedSite, mapStyle }) {
       map.current.scrollZoom.disable();
       addCitiesToMapRef(map.current, cities);
       addStatesToMapRef(map.current, states);
-    } else if (selectedSite === SUN_CITY) {
-      return;
     } else {
-      const routeData = await getRouteData(selectedSite);
+      const routeData =
+        selectedSite === SUN_CITY ? [] : await getRouteData(selectedSite);
       map.current.scrollZoom.enable();
       document.querySelectorAll(".marker").forEach((el) => el.remove());
       if (map.current.getLayer("state-boundary")) {
