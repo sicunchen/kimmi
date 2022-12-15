@@ -14,6 +14,7 @@ import {
   parseDatePicker,
   formatDatePicker,
   createServiceDatesTemplate,
+  filterTimelineData,
 } from "../hooks/useDailyChartData";
 import { SITE_FILTER } from "../constants/filters";
 import { SITE_BUTTONS } from "../constants/sites";
@@ -23,6 +24,8 @@ import {
   INTERVENTIONS_TOTAL,
   INTERVENTION_BUTTONS,
 } from "../constants/interventionCategories";
+import timelineData from "./software.json";
+import { AUTONOMY_PCT, IPKM, KMPI } from "../constants/metrics";
 
 const PATTERN_ID = "brush_pattern";
 const selectedBrushStyle = {
@@ -30,7 +33,6 @@ const selectedBrushStyle = {
   stroke: "white",
 };
 const accentColor = "#FF9C17";
-const chartSeparation = 20;
 const filterByDate = (data, start, end) => {
   return data.filter((d) => {
     return d.date >= start && d.date <= end;
@@ -62,7 +64,7 @@ function getYDomain(metricsData) {
     0,
     Math.max(
       0.6,
-      max(metricsData, (d) => d.kmpi),
+      max(metricsData, (d) => d.metric),
       max(metricsData, (d) => d.avg)
     ),
   ];
@@ -88,7 +90,7 @@ export default function AutonomyMetricsWithBrush({
     top: 20,
     left: 20,
     bottom: 20,
-    right: 30,
+    right: 60,
   },
 }) {
   //dimenstion
@@ -102,8 +104,9 @@ export default function AutonomyMetricsWithBrush({
   const legendBottomMarin = 30;
   const innerHeight =
     height - margin.top - legendHeight - legendBottomMarin - margin.bottom;
-  const topChartBottomMargin = 50;
-  const topChartHeight = 0.8 * innerHeight - topChartBottomMargin;
+  const topChartBottomMargin = 80;
+  const chartSeparation = 30;
+  const topChartHeight = 0.9 * innerHeight - topChartBottomMargin;
   const bottomChartHeight = innerHeight - topChartHeight - chartSeparation;
 
   // bounds
@@ -117,6 +120,7 @@ export default function AutonomyMetricsWithBrush({
     interventionType,
     checkedExclusions,
     movingAverageWindow,
+    selectedMetric,
   } = filterValues;
 
   const serviceDates = createServiceDatesTemplate(rawDailyAutonomyMetricsData);
@@ -210,10 +214,11 @@ export default function AutonomyMetricsWithBrush({
     [filteredData, yMax]
   );
 
-  const { sumAutonomousKm, sumInterventions, sumKmpiValue } =
+  const { sumAutonomousKm, sumInterventions, sumMetric, sumDistanceKm } =
     updateAutonomyMetric(
       [brushDomain[0], brushDomain[1]],
-      dailyAutonomyMetricsData
+      dailyAutonomyMetricsData,
+      selectedMetric
     );
 
   const renderTitle = (activeFilter) => {
@@ -233,7 +238,44 @@ export default function AutonomyMetricsWithBrush({
     }
     return INTERVENTION_BUTTONS[interventionType];
   };
-
+  const filteredTimelineData = filterTimelineData(
+    timelineData,
+    activeFilter,
+    filterValues
+  );
+  const renderSummaryMetrics = (selectedMetric) => {
+    if (selectedMetric === KMPI) {
+      return (
+        <div className="d-flex justify-content-center">
+          <p className="h4 me-3">{sumMetric} km/I</p>
+          <p className="h4 me-3">{sumAutonomousKm} autonomous km</p>
+          <p className="h4">
+            {sumInterventions}{" "}
+            {renderInterventionTitle(interventionType, checkedExclusions)}
+          </p>
+        </div>
+      );
+    } else if (selectedMetric === IPKM) {
+      return (
+        <div className="d-flex justify-content-center">
+          <p className="h4 me-3">{sumMetric} I/50km</p>
+          <p className="h4 me-3">{sumAutonomousKm} autonomous km</p>
+          <p className="h4">
+            {sumInterventions}{" "}
+            {renderInterventionTitle(interventionType, checkedExclusions)}
+          </p>
+        </div>
+      );
+    } else if (selectedMetric === AUTONOMY_PCT) {
+      return (
+        <div className="d-flex justify-content-center">
+          <p className="h4 me-3">{sumMetric} autonomy</p>
+          <p className="h4 me-3">{sumAutonomousKm} autonomous km</p>
+          <p className="h4">{sumDistanceKm} km in service</p>
+        </div>
+      );
+    }
+  };
   return (
     <div>
       <div className="d-flex justify-content-center align-items-center mb-3">
@@ -267,15 +309,7 @@ export default function AutonomyMetricsWithBrush({
         <span className="h3">{` ${formatDate(brushDomain[1])}`}</span>
         <span className="h3"> {`for ${renderTitle(activeFilter)}`}</span>
       </div>
-      <div className="d-flex justify-content-center">
-        <p className="h4 me-3">{sumKmpiValue} km/I</p>
-        <p className="h4 me-3">{sumAutonomousKm} autonomous km</p>
-        <p className="h4">
-          {sumInterventions}{" "}
-          {renderInterventionTitle(interventionType, checkedExclusions)}
-        </p>
-      </div>
-
+      {renderSummaryMetrics(selectedMetric)}
       <svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
         <g transform={`translate(${width / 3},${margin.top})`}>
           <rect fill="#00bcee" width={legendHeight} height={legendHeight} />
@@ -308,17 +342,22 @@ export default function AutonomyMetricsWithBrush({
           strokeWidth={2}
           left={margin.left}
         />
+
         <BarChartWithMovingAvgLine
+          selectedMetric={selectedMetric}
+          width={width}
           data={filteredData}
-          ß
           top={margin.top + legendHeight + legendBottomMarin}
           left={margin.left}
           xMax={xMax}
           xScale={xScale}
           yMax={yMax}
           yScale={yScale}
+          timelineData={filteredTimelineData}
         />
         <BarChartWithMovingAvgLine
+          selectedMetric={selectedMetric}
+          width={width}
           data={dailyAutonomyMetricsData}
           hideRightAxis
           top={
@@ -332,6 +371,7 @@ export default function AutonomyMetricsWithBrush({
           xScale={brushXScale}
           yMax={yBrushMax}
           yScale={brushYScale}
+          timelineData={filteredTimelineData}
         >
           <PatternLines
             height={5}

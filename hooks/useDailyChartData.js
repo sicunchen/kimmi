@@ -4,9 +4,11 @@ import { timeDay, timeMonth, timeWeek, timeYear } from "d3-time";
 import { timeParse, timeFormat } from "d3-time-format";
 import { flatGroup, flatRollup, sum, index, mean, ascending } from "d3-array";
 import { NORTH_AMERICA } from "../constants/sites";
-import { COMMERCIAL } from "../constants/shiftCategories";
+import { COMMERCIAL, DRIVER_OUT_READY } from "../constants/shiftCategories";
 import { format } from "d3-format";
 import { SHIFT_FILTER, SITE_FILTER } from "../constants/filters";
+import { AUTONOMY_PCT, IPKM, KMPI } from "../constants/metrics";
+
 export default function useDailyChartData() {
   const { data, error } = useSWR(
     "https://myvpkwzce6.us-east-1.awsapprunner.com/interventions?start_date=2022-06-01",
@@ -79,6 +81,15 @@ export function createServiceDatesTemplate(rawDailyAutonomyMetricsData) {
     .sort((a, b) => ascending(a.date, b.date));
   return serviceDates;
 }
+
+export function filterTimelineData(timelineData, activeFilter, filterValues) {
+  const { mainFilter } = filterValues;
+  if (activeFilter === SHIFT_FILTER && mainFilter === DRIVER_OUT_READY) {
+    return timelineData.filter((d) => d.category === DRIVER_OUT_READY);
+  } else {
+    return timelineData.filter((d) => d.category === COMMERCIAL);
+  }
+}
 export function transformDailyAutonomyMetricsData(
   rawDailyAutonomyMetricsData,
   activeFilter,
@@ -91,6 +102,7 @@ export function transformDailyAutonomyMetricsData(
     mainFilter,
     movingAverageWindow,
     checkedExclusions,
+    selectedMetric,
   } = filterValues;
   if (activeFilter === SITE_FILTER) {
     filteredData = rawDailyAutonomyMetricsData.filter((d) => {
@@ -116,14 +128,30 @@ export function transformDailyAutonomyMetricsData(
         }
       }
       const autonomousKm = sum(v, (d) => d.distanceAutonomous) / 1000;
+      const distanceInServiceKm = sum(v, (d) => d.distanceInService) / 1000;
+      const kmpi =
+        interventions === 0 ? autonomousKm : autonomousKm / interventions;
+
+      const ipkm = autonomousKm === 0 ? 0 : (interventions / autonomousKm) * 50;
+      const autonomyPct = (autonomousKm / distanceInServiceKm) * 100;
+      const metric =
+        selectedMetric === KMPI
+          ? kmpi
+          : selectedMetric === AUTONOMY_PCT
+          ? autonomyPct
+          : ipkm;
+
       return {
         date: v[0].date,
         shiftCategory: v[0].shiftCategory,
+        distanceInServiceKm,
         autonomousKm,
         interventions,
-        // handle case where there are no interventions; default to autonomousKm
-        kmpi: interventions === 0 ? autonomousKm : autonomousKm / interventions,
         opacity: 1,
+        metric,
+        kmpi,
+        ipkm,
+        autonomyPct,
       };
     },
     (d) => d.date
@@ -144,9 +172,11 @@ export function fillInMissingDates(siteData, serviceDates) {
       lastMovingAvgValue = siteDate.get(serviceDate.date).avg;
     } else {
       dataArray.push({
-        // empty row equivalent for graphing purposes
-        date: serviceDate.date,
+        date: serviceDate["date"],
         kmpi: 0,
+        ipkm: 0,
+        autonomyPct: 0,
+        metric: 0,
         avg: lastMovingAvgValue,
         opacity: 0,
       });
@@ -155,7 +185,7 @@ export function fillInMissingDates(siteData, serviceDates) {
   return dataArray;
 }
 
-export function movingAverage(data, movingAverageWindow, column = "kmpi") {
+export function movingAverage(data, movingAverageWindow, column = "metric") {
   const sortedData = data.sort((a, b) => ascending(a.date, b.date));
 
   // avg over past N days
@@ -170,30 +200,45 @@ export function movingAverage(data, movingAverageWindow, column = "kmpi") {
   });
 }
 
-export function updateAutonomyMetric(dateRange, dailyAutonomyMetricsData) {
+export function updateAutonomyMetric(
+  dateRange,
+  dailyAutonomyMetricsData,
+  selectedMetric
+) {
   const data = dailyAutonomyMetricsData
     .filter((d) => dateRange[0] <= d.date && d.date <= dateRange[1])
     .filter((d) => d.opacity === 1);
-  const sumAutonomousKm = formatDecimal(sum(data, (d) => d.autonomousKm));
+  const sumAutonomousKm = formatDecimal1(sum(data, (d) => d.autonomousKm));
   const sumInterventions = sum(data, (d) => d.interventions);
-  const sumKmpiValue = formatAutonomyMetric(sumAutonomousKm / sumInterventions);
+  const sumDistanceKm = formatDecimal1(sum(data, (d) => d.distanceInServiceKm));
+  const sumMetric =
+    selectedMetric === KMPI
+      ? formatAutonomyMetric(sumAutonomousKm / sumInterventions)
+      : selectedMetric === IPKM
+      ? formatDecimal1((sumInterventions / sumAutonomousKm) * 50)
+      : `${formatDecimal1((100 * sumAutonomousKm) / sumDistanceKm)} %`;
+
   return {
     sumAutonomousKm,
     sumInterventions,
-    sumKmpiValue,
+    sumMetric,
+    sumDistanceKm,
   };
 }
 
 function formatAutonomyMetric(d) {
-  return isNaN(d) ? "no data" : d == 0 ? "no data" : formatDecimal(d);
+  return isNaN(d) ? "no data" : d == 0 ? "no data" : formatDecimal2(d);
 }
 
 export function formatDate(date) {
   return timeFormat("%b %e, %Y")(date);
 }
 
-export function formatDecimal(num) {
+export function formatDecimal2(num) {
   return format(".2f")(num);
+}
+export function formatDecimal1(num) {
+  return format(".1f")(num);
 }
 
 export function formatDatePicker(date) {

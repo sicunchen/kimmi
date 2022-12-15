@@ -20,6 +20,7 @@ import {
 } from "../constants/interventionCategories";
 import { SITE_FILTER, SHIFT_FILTER } from "../constants/filters";
 import AutomonyMetricsWithBrush from "./AutonomyMetricsWithBrush";
+import { AUTONOMY_PCT, KMPI, METRICS_BUTTONS } from "../constants/metrics";
 
 export default function Tab4() {
   const [selectedSite, setSite] = useState(NORTH_AMERICA);
@@ -27,6 +28,7 @@ export default function Tab4() {
   const [selectedShift, setShift] = useState(COMMERCIAL);
   const [activeFilter, setActiveFilter] = useState(SHIFT_FILTER);
   const [interventionType, setInterventionType] = useState(INTERVENTIONS_TOTAL);
+  const [selectedMetric, setSelectedMetric] = useState(KMPI);
   const [checkedExclusions, setCheckedExclusions] = useState({
     [INTERVENTION_MANUALZONE]: false,
     [INTERVENTION_PASSENGERSTOPS]: false,
@@ -71,6 +73,9 @@ export default function Tab4() {
   };
   const handleChangeInterventionType = (e) => {
     setInterventionType(e.target.value);
+  };
+  const handleChangeMetric = (e) => {
+    setSelectedMetric(e.target.value);
   };
 
   const handleChangeExclusion = (e) => {
@@ -156,12 +161,13 @@ export default function Tab4() {
             return (
               <Fragment key={key}>
                 <input
+                  disabled={selectedMetric === AUTONOMY_PCT}
                   className="btn-check"
                   type="radio"
                   value={key}
                   id={`intervention-button-${key}`}
                   name="interventions"
-                  checked={interventionType === key}
+                  checked={selectedMetric === key}
                   onChange={handleChangeInterventionType}
                 />
                 <label
@@ -194,7 +200,8 @@ export default function Tab4() {
                 <input
                   disabled={
                     key === INTERVENTIONS_PARKING_LOT ||
-                    interventionType !== INTERVENTIONS_TOTAL
+                    interventionType !== INTERVENTIONS_TOTAL ||
+                    selectedMetric === AUTONOMY_PCT
                   }
                   className="btn-check"
                   type="checkbox"
@@ -207,6 +214,36 @@ export default function Tab4() {
                 <label
                   className="btn btn-outline-primary"
                   htmlFor={`exclude-intervention-button-${key}`}
+                >
+                  {val}
+                </label>
+              </Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+  const MetricFilters = () => {
+    return (
+      <div className="d-flex justify-content-center align-items-center mb-3">
+        <div className="me-2">Select a metric:</div>
+        <div className="btn-group" role="group" aria-label="metric buttons">
+          {Object.entries(METRICS_BUTTONS).map(([key, val]) => {
+            return (
+              <Fragment key={key}>
+                <input
+                  className="btn-check"
+                  type="radio"
+                  value={key}
+                  id={`metrics-button-${key}`}
+                  name="metrics"
+                  checked={selectedMetric === key}
+                  onChange={handleChangeMetric}
+                />
+                <label
+                  className="btn btn-outline-primary"
+                  htmlFor={`metrics-button-${key}`}
                 >
                   {val}
                 </label>
@@ -262,6 +299,7 @@ export default function Tab4() {
           </div>
           {activeFilter === SHIFT_FILTER ? <ShiftFilters /> : <SiteFilters />}
         </div>
+        <MetricFilters />
         <InterventionFilters />
         <ExcludeInterventionsFilters />
         <div className="d-flex justify-content-center align-items-center mb-3">
@@ -297,6 +335,7 @@ export default function Tab4() {
                       activeFilter === SITE_FILTER
                         ? selectedSite
                         : selectedShift,
+                    selectedMetric,
                     interventionType,
                     checkedExclusions,
                     movingAverageWindow,
