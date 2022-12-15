@@ -76,7 +76,13 @@ export default function RouteMap({ selectedSite, mapStyle }) {
       type: "fill",
       source: "states",
       paint: {
-        "fill-color": "#00bcee",
+        "fill-color": [
+          "match",
+          ["get", "NAME"],
+          "Arizona",
+          "#cc7d12",
+          "#00bcee",
+        ],
         "fill-opacity": 0.5,
       },
       filter: ["==", "$type", "Polygon"],
