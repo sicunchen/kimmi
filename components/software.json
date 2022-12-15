@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2022-06-27",
+    "category": "Commercial",
+    "label": "v11",
+    "tooltip": "software release Jun 27"
+  },
+  {
+    "date": "2022-07-29",
+    "category": "Commercial",
+    "label": "v12",
+    "tooltip": "software release Jul 29"
+  },
+  {
+    "date": "2022-09-06",
+    "category": "Commercial",
+    "label": "v13",
+    "tooltip": "software release Sep 6"
+  },
+  {
+    "date": "2022-11-10",
+    "category": "DoR",
+    "label": "v1.0",
+    "tooltip": "pre-soak testing begins Nov 10"
+  }
+]

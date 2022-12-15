@@ -1,17 +1,22 @@
 import { Group } from "@visx/group";
 import { timeDay, timeHour } from "d3-time";
 import { AxisBottom, AxisRight } from "@visx/axis";
-import { LinePath, Bar } from "@visx/shape";
+import { LinePath, Bar, Line } from "@visx/shape";
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import {
-  formatDecimal,
+  formatDecimal1,
   formatDate,
   multiDateFormat,
+  parseDatePicker,
 } from "../hooks/useDailyChartData";
-import React from "react";
-
+import React, { Fragment } from "react";
+import { Point } from "@visx/point";
+import { extent } from "d3-array";
+import { METRICS_LABELS } from "../constants/metrics";
 export default function AutomonyMetricBarChart({
+  selectedMetric,
+  width,
   xScale,
   hideRightAxis,
   yScale,
@@ -21,6 +26,7 @@ export default function AutomonyMetricBarChart({
   top,
   left,
   children,
+  timelineData,
 }) {
   const {
     tooltipData,
@@ -30,17 +36,34 @@ export default function AutomonyMetricBarChart({
     showTooltip,
     hideTooltip,
   } = useTooltip();
-  const { containerRef, TooltipInPortal } = useTooltipInPortal({
-    detectBounds: true,
-    // when tooltip containers are scrolled, this will correctly update the Tooltip position
-    scroll: true,
-  });
+  const { containerRef, TooltipInPortal } = useTooltipInPortal();
+  const renderTooltipContent = (tooltipData) => {
+    return tooltipData.date ? (
+      <div>
+        <h6>{formatDate(tooltipData.date)}</h6>
+        <p>moving average: {formatDecimal1(tooltipData.avg)}</p>
+        <p>
+          {METRICS_LABELS[selectedMetric]}: {formatDecimal1(tooltipData.metric)}
+        </p>
+        <p>autonomous km: {formatDecimal1(tooltipData.autonomousKm)}</p>
+        <p>interventions: {tooltipData.interventions}</p>
+      </div>
+    ) : (
+      <div>
+        <span>{tooltipData}</span>
+      </div>
+    );
+  };
   return (
-    <svg ref={containerRef}>
+    <svg width={width} ref={containerRef}>
       <Group top={top} left={left}>
         {data.map((d) => {
+          if (isNaN(d.metric)) {
+            console.log(d.date, d.metric);
+            console.log(yScale(d.metric));
+          }
           const barX = xScale(timeHour.offset(d.date));
-          const barY = yScale(d.kmpi);
+          const barY = yScale(d.metric);
           const barWidth =
             ((xScale(timeDay.offset(new Date())) - xScale(new Date())) * 22) /
             24;
@@ -115,23 +138,55 @@ export default function AutomonyMetricBarChart({
             );
           }} */}
         </LinePath>
+        {timelineData.map((d) => {
+          const { date, label, tooltip } = d;
+          const [start, end] = extent(data, (d) => d.date);
+          const timelineDate = parseDatePicker(date);
+          if (timelineDate < start || timelineData > end) {
+            return null;
+          }
+
+          const timelineX = xScale(parseDatePicker(date));
+          const from = new Point({ x: timelineX, y: -10 });
+          const to = new Point({
+            x: timelineX,
+            y: yMax,
+          });
+
+          return (
+            <Fragment key={`timeline-${label}`}>
+              <Line from={from} to={to} stroke="darkgray" strokeWidth={3} />
+              <text
+                x={timelineX}
+                y={-10}
+                dy="0.5em"
+                dx="5"
+                onMouseMove={() => {
+                  showTooltip({
+                    tooltipData: tooltip,
+                    tooltipTop: 0,
+                    tooltipLeft: timelineX,
+                  });
+                }}
+                onMouseOut={hideTooltip}
+              >
+                {label}
+              </text>
+            </Fragment>
+          );
+        })}
         <AxisBottom scale={xScale} top={yMax} tickFormat={multiDateFormat} />
         {tooltipOpen && tooltipData && (
           <TooltipInPortal top={tooltipTop} left={tooltipLeft}>
-            <div>
-              <h6>{formatDate(tooltipData.date)}</h6>
-              <p>moving average: {formatDecimal(tooltipData.avg)}</p>
-              <p>km/I: {formatDecimal(tooltipData.kmpi)}</p>
-              <p>autonomous km: {formatDecimal(tooltipData.autonomousKm)}</p>
-              <p>interventions: {tooltipData.interventions}</p>
-            </div>
+            {renderTooltipContent(tooltipData)}
           </TooltipInPortal>
         )}
         {!hideRightAxis && (
           <AxisRight
+            label={METRICS_LABELS[selectedMetric]}
             hideAxisLine
             left={xMax}
-            numTicks={2}
+            numTicks={5}
             scale={yScale}
             tickFormat={(d) => d.toFixed(1)}
           />
