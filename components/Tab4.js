@@ -167,7 +167,7 @@ export default function Tab4() {
                   value={key}
                   id={`intervention-button-${key}`}
                   name="interventions"
-                  checked={selectedMetric === key}
+                  checked={interventionType === key}
                   onChange={handleChangeInterventionType}
                 />
                 <label

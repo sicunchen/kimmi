@@ -11,5 +11,5 @@ export const METRICS_BUTTONS = {
 export const METRICS_LABELS = {
   [KMPI]: "km/I",
   [IPKM]: "I/50km",
-  [AUTONOMY_PCT]: "Autonomy %",
+  [AUTONOMY_PCT]: "Auto %",
 };

@@ -25,7 +25,7 @@ import {
   INTERVENTION_BUTTONS,
 } from "../constants/interventionCategories";
 import timelineData from "./software.json";
-import { AUTONOMY_PCT, IPKM, KMPI } from "../constants/metrics";
+import { AUTONOMY_PCT, IPKM, KMPI, METRICS_LABELS } from "../constants/metrics";
 
 const PATTERN_ID = "brush_pattern";
 const selectedBrushStyle = {
@@ -59,14 +59,19 @@ const BrushHandle = ({ x, height, isBrushActive }) => {
   );
 };
 //ask Alex about the max setting here
-function getYDomain(metricsData) {
+function getYDomain(metricsData, selectedMetric) {
   return [
     0,
-    Math.max(
-      0.6,
-      max(metricsData, (d) => d.metric),
-      max(metricsData, (d) => d.avg)
-    ),
+    selectedMetric === AUTONOMY_PCT
+      ? Math.max(
+          100,
+          max(metricsData, (d) => d.metric),
+          max(metricsData, (d) => d.avg)
+        )
+      : Math.max(
+          max(metricsData, (d) => d.metric),
+          max(metricsData, (d) => d.avg)
+        ),
   ];
 }
 
@@ -199,7 +204,7 @@ export default function AutonomyMetricsWithBrush({
   const brushYScale = useMemo(
     () =>
       scaleLinear()
-        .domain(getYDomain(dailyAutonomyMetricsData))
+        .domain(getYDomain(dailyAutonomyMetricsData, selectedMetric))
         .range([yBrushMax, 0]),
     [dailyAutonomyMetricsData, yBrushMax]
   );
@@ -210,7 +215,10 @@ export default function AutonomyMetricsWithBrush({
   );
 
   const yScale = useMemo(
-    () => scaleLinear().domain(getYDomain(filteredData)).range([yMax, 0]),
+    () =>
+      scaleLinear()
+        .domain(getYDomain(filteredData, selectedMetric))
+        .range([yMax, 0]),
     [filteredData, yMax]
   );
 
@@ -314,7 +322,7 @@ export default function AutonomyMetricsWithBrush({
         <g transform={`translate(${width / 3},${margin.top})`}>
           <rect fill="#00bcee" width={legendHeight} height={legendHeight} />
           <text x={legendHeight + 5} y={legendHeight / 2} dy="0.35em">
-            daily km/I
+            daily
           </text>
         </g>
         <g transform={`translate(${width / 2},${margin.top})`}>
@@ -337,7 +345,7 @@ export default function AutonomyMetricsWithBrush({
           width={xMax}
           height={yMax}
           numTicksColumns={0}
-          numTicksRows={3}
+          numTicksRows={5}
           top={margin.top + legendHeight + legendBottomMarin}
           strokeWidth={2}
           left={margin.left}

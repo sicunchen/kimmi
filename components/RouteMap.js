@@ -80,7 +80,7 @@ export default function RouteMap({ selectedSite, mapStyle }) {
           "match",
           ["get", "NAME"],
           "Arizona",
-          "#cc7d12",
+          "#34934C",
           "#00bcee",
         ],
         "fill-opacity": 0.5,

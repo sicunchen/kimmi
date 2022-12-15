@@ -22,5 +22,11 @@
     "category": "DoR",
     "label": "v1.0",
     "tooltip": "pre-soak testing begins Nov 10"
+  },
+  {
+    "date": "2022-12-05",
+    "category": "DoR",
+    "label": "v2.0",
+    "tooltip": "pre-soak testing begins Dec 5"
   }
 ]
