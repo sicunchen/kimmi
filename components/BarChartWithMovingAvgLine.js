@@ -13,7 +13,7 @@ import {
 import React, { Fragment } from "react";
 import { Point } from "@visx/point";
 import { extent } from "d3-array";
-import { METRICS_LABELS } from "../constants/metrics";
+import { AUTONOMY_PCT, METRICS_LABELS } from "../constants/metrics";
 export default function AutomonyMetricBarChart({
   selectedMetric,
   width,
@@ -38,15 +38,27 @@ export default function AutomonyMetricBarChart({
   } = useTooltip();
   const { containerRef, TooltipInPortal } = useTooltipInPortal();
   const renderTooltipContent = (tooltipData) => {
-    return tooltipData.date ? (
+    const {
+      date,
+      avg,
+      metric,
+      autonomousKm,
+      interventions,
+      distanceInServiceKm,
+    } = tooltipData;
+    return date ? (
       <div>
-        <h6>{formatDate(tooltipData.date)}</h6>
-        <p>moving average: {formatDecimal1(tooltipData.avg)}</p>
+        <h6>{formatDate(date)}</h6>
+        <p>moving average: {formatDecimal1(avg)}</p>
         <p>
-          {METRICS_LABELS[selectedMetric]}: {formatDecimal1(tooltipData.metric)}
+          {METRICS_LABELS[selectedMetric]}: {formatDecimal1(metric)}
         </p>
-        <p>autonomous km: {formatDecimal1(tooltipData.autonomousKm)}</p>
-        <p>interventions: {tooltipData.interventions}</p>
+        <p>autonomous km: {formatDecimal1(autonomousKm)}</p>
+        {selectedMetric === AUTONOMY_PCT ? (
+          <p>distance in service km: {formatDecimal1(distanceInServiceKm)}</p>
+        ) : (
+          <p>interventions: {interventions}</p>
+        )}
       </div>
     ) : (
       <div>
