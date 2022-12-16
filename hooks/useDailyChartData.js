@@ -240,6 +240,9 @@ export function formatDecimal2(num) {
 export function formatDecimal1(num) {
   return format(".1f")(num);
 }
+export function formatInteger(num) {
+  return format("d")(num);
+}
 
 export function formatDatePicker(date) {
   return timeFormat("%Y-%m-%d")(date);
