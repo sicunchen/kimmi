@@ -22,7 +22,7 @@ import { SITE_FILTER, SHIFT_FILTER } from "../constants/filters";
 import AutomonyMetricsWithBrush from "./AutonomyMetricsWithBrush";
 import { AUTONOMY_PCT, KMPI, METRICS_BUTTONS } from "../constants/metrics";
 
-export default function Tab4() {
+export default function Dashboard() {
   const [selectedSite, setSite] = useState(NORTH_AMERICA);
   const [selectedStyle, setStyle] = useState(LIGHT_STYLE);
   const [selectedShift, setShift] = useState(COMMERCIAL);
