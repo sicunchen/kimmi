@@ -1,11 +1,18 @@
-import "../styles/custom.scss";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect } from "react";
+import { Poppins } from "@next/font/google";
+import "../styles/reset.css";
+import "../styles/variables.css";
+const poppins = Poppins({
+  subsets: "latin",
+  weight: ["400", "500", "600", "700"],
+});
+
 function MyApp({ Component, pageProps }) {
-  // useEffect(() => {
-  //   import("bootstrap/dist/js/bootstrap");
-  // }, []);
-  return <Component {...pageProps} />;
+  return (
+    <main className={poppins.className}>
+      <Component {...pageProps} />
+    </main>
+  );
 }
 
 export default MyApp;

@@ -1,0 +1,13 @@
+:root {
+    --primary:54,144,64;
+    --muted: #636D65;
+    --dark: #3E3838;
+    --blue: #00bcee;
+    --orange: #FF9C17;
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3:1.5rem;
+    --font-size-sm:0.5rem;
+    --font-size-md: 1rem;
+    --font-size-large:2rem;
+}

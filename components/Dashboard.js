@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import RouteMap from "./RouteMap";
 import ParentSize from "@visx/responsive/lib/components/ParentSize";
 import AutonomyMetricsWithBrush from "./AutonomyMetricsWithBrush";
@@ -21,7 +21,8 @@ import {
 import { SITE_FILTER, SHIFT_FILTER } from "../constants/filters";
 import AutomonyMetricsWithBrush from "./AutonomyMetricsWithBrush";
 import { AUTONOMY_PCT, KMPI, METRICS_BUTTONS } from "../constants/metrics";
-
+import useResizeObserver from "@react-hook/resize-observer";
+import styles from "./Dashboard.module.css";
 export default function Dashboard() {
   const [selectedSite, setSite] = useState(NORTH_AMERICA);
   const [selectedStyle, setStyle] = useState(LIGHT_STYLE);
@@ -33,6 +34,11 @@ export default function Dashboard() {
     [INTERVENTION_MANUALZONE]: false,
     [INTERVENTION_PASSENGERSTOPS]: false,
     [INTERVENTIONS_PARKING_LOT]: false,
+  });
+  const ref = useRef(null);
+
+  useResizeObserver(ref, (entry) => {
+    entry.target.style.height = `${window.innerHeight}px`;
   });
   useEffect(() => {
     //when rare or non-rare interventions is selected, unselect all the checkboxes
@@ -260,8 +266,9 @@ export default function Dashboard() {
       ? "mapbox://styles/sdi-mapbox/ckljmydtx12aj17p7nwxws7ct"
       : "mapbox://styles/mapbox/satellite-v9";
   return (
-    <div className="d-flex flex-column vh-100">
-      <div id="manual">
+    <section ref={ref} className={styles.dashboardSection} id="dashboard">
+      dashboard
+      {/* <div id="dashboard">
         <div className="text-center">
           <h1 className="text-primary">Dashboard</h1>
         </div>
@@ -377,7 +384,7 @@ export default function Dashboard() {
           </label>
         </div>
         <RouteMap mapStyle={mapStyle} selectedSite={selectedSite} />
-      </div>
-    </div>
+      </div> */}
+    </section>
   );
 }

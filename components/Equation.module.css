@@ -1,0 +1,67 @@
+.equationContainer {  
+    display: grid;
+    max-width: 400px;
+    margin:var(--space-1) auto;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "equationHeader equationHeader equationHeader"
+      "ak equateSign akNum"
+      "int equateSign intNum";
+}
+.showResult{
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    grid-template-areas:       
+    "equationHeader equationHeader equationHeader equationHeader equationHeader"
+    "ak equateSign akNum resultEquateSign result"
+    "int equateSign intNum resultEquateSign result";;
+}
+  
+.equationHeader { 
+    grid-area: equationHeader;
+    place-self: center;
+}
+
+.result{
+    grid-area: result;
+    place-self: center;
+}
+
+.equateSign { 
+    grid-area: equateSign; 
+    place-self: center;
+    font-size: var(--font-size-large);
+}
+
+.resultEquateSign { 
+    grid-area: resultEquateSign; 
+    place-self: center;
+    font-size: var(--font-size-large);
+}
+
+.ak { 
+    grid-area: ak; 
+    white-space: nowrap;
+    place-self: center;
+    border-bottom: 2px solid var(--dark);
+}
+
+.int { 
+    grid-area: int; 
+    place-self: center;
+
+}
+
+.akNum { 
+    grid-area: akNum; 
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid var(--dark);
+}
+
+.intNum { 
+    grid-area: intNum; 
+    display: flex;
+    justify-content: center;
+}
