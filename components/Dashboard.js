@@ -23,6 +23,20 @@ import AutomonyMetricsWithBrush from "./AutonomyMetricsWithBrush";
 import { AUTONOMY_PCT, KMPI, METRICS_BUTTONS } from "../constants/metrics";
 import useResizeObserver from "@react-hook/resize-observer";
 import styles from "./Dashboard.module.css";
+import { IoFilter } from "react-icons/io5";
+
+const FilterButton = () => {
+  return (
+    <button className={styles.filterButton}>
+      Show Filters
+      <IoFilter size={"30px"} />
+    </button>
+  );
+};
+const Header = () => {
+  return <header className={styles.header}>Autonomy Dashboard</header>;
+};
+
 export default function Dashboard() {
   const [selectedSite, setSite] = useState(NORTH_AMERICA);
   const [selectedStyle, setStyle] = useState(LIGHT_STYLE);
@@ -36,9 +50,15 @@ export default function Dashboard() {
     [INTERVENTIONS_PARKING_LOT]: false,
   });
   const ref = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useResizeObserver(ref, (entry) => {
     entry.target.style.height = `${window.innerHeight}px`;
+    if (window.innerWidth < 500) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
   });
   useEffect(() => {
     //when rare or non-rare interventions is selected, unselect all the checkboxes
@@ -265,126 +285,31 @@ export default function Dashboard() {
     selectedStyle === LIGHT_STYLE
       ? "mapbox://styles/sdi-mapbox/ckljmydtx12aj17p7nwxws7ct"
       : "mapbox://styles/mapbox/satellite-v9";
+  const renderMarkup = (isMobile) => {
+    return isMobile ? (
+      <Fragment>
+        <Header />
+        <FilterButton />
+        <div className={styles.summary}>Summary metrics</div>
+        <div className={styles.barChartContainer}>bar chart</div>
+        <div className={styles.mapContainer}>map</div>
+      </Fragment>
+    ) : (
+      <Fragment>
+        <Header />
+        <div className={styles.sideBar}>sideBar</div>
+        <div className={styles.summaryAndFilterButton}>
+          <div className={styles.summary}>Summary metrics</div>
+          <FilterButton />
+        </div>
+        <div className={styles.barChartContainer}>bar chart</div>
+        <div className={styles.mapContainer}>map</div>
+      </Fragment>
+    );
+  };
   return (
-    <section ref={ref} className={styles.dashboardSection} id="dashboard">
-      dashboard
-      {/* <div id="dashboard">
-        <div className="text-center">
-          <h1 className="text-primary">Dashboard</h1>
-        </div>
-        <div className="d-flex justify-content-center align-items-center mt-3 mb-3">
-          <div className="me-2">Filter the chart by:</div>
-          <div
-            className="btn-group"
-            role="group"
-            aria-label="filter type buttons"
-          >
-            <input
-              checked={activeFilter === SHIFT_FILTER}
-              className="btn-check"
-              type="radio"
-              value={SHIFT_FILTER}
-              id={SHIFT_FILTER}
-              name="filters"
-              onChange={handleChangeFilter}
-            />
-            <label className="btn btn-outline-primary" htmlFor={SHIFT_FILTER}>
-              Shift Category
-            </label>
-            <input
-              checked={activeFilter === SITE_FILTER}
-              className="btn-check"
-              type="radio"
-              value={SITE_FILTER}
-              id={SITE_FILTER}
-              name="filters"
-              onChange={handleChangeFilter}
-            />
-            <label className="btn btn-outline-primary" htmlFor={SITE_FILTER}>
-              Site
-            </label>
-          </div>
-          {activeFilter === SHIFT_FILTER ? <ShiftFilters /> : <SiteFilters />}
-        </div>
-        <MetricFilters />
-        <InterventionFilters />
-        <ExcludeInterventionsFilters />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          <label htmlFor="movingAvgDays" className="form-label me-2">
-            Moving Average Window (range between 2-100):
-          </label>
-          <div>
-            <input
-              type="range"
-              className="form-range"
-              min="2"
-              max="100"
-              value={movingAverageWindow}
-              onChange={handleChangeWindow}
-            />
-          </div>
-          <div className="form-label ms-3">{movingAverageWindow} days</div>
-        </div>
-      </div>
-      <div style={{ height: "400px", marginBottom: "150px" }}>
-        {rawDailyAutonomyMetricsData && (
-          <ParentSize>
-            {({ width, height }) => {
-              //https://github.com/airbnb/visx/issues/577
-              if (width < 10) return null;
-              return (
-                <AutomonyMetricsWithBrush
-                  rawDailyAutonomyMetricsData={rawDailyAutonomyMetricsData}
-                  height={height}
-                  activeFilter={activeFilter}
-                  filterValues={{
-                    mainFilter:
-                      activeFilter === SITE_FILTER
-                        ? selectedSite
-                        : selectedShift,
-                    selectedMetric,
-                    interventionType,
-                    checkedExclusions,
-                    movingAverageWindow,
-                  }}
-                  width={width}
-                />
-              );
-            }}
-          </ParentSize>
-        )}
-      </div>
-      <div>
-        <div
-          className="btn-group position-absolute bg-white"
-          onChange={handleChangeStyle}
-          role="group"
-          style={{ zIndex: 1 }}
-        >
-          <input
-            className="btn-check"
-            defaultChecked
-            id="btnradio1"
-            name="mapStyles"
-            type="radio"
-            value="light"
-          />
-          <label className="btn btn-outline-primary" htmlFor="btnradio1">
-            Light
-          </label>
-          <input
-            className="btn-check"
-            id="btnradio2"
-            name="mapStyles"
-            type="radio"
-            value="satellite"
-          />
-          <label className="btn btn-outline-primary" htmlFor="btnradio2">
-            Satellite
-          </label>
-        </div>
-        <RouteMap mapStyle={mapStyle} selectedSite={selectedSite} />
-      </div> */}
+    <section id="dashboard" ref={ref} className={styles.dashboardSection}>
+      {renderMarkup(isMobile)}
     </section>
   );
 }

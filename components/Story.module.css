@@ -26,7 +26,7 @@
 }
 .textContainer{
     width: 40vw;
-    padding-top:50vh;
+    padding-top:40vh;
     padding-left: 5vw;
     padding-right: 5vw;
 }
@@ -50,7 +50,7 @@
     position: relative;
 }
 .section{
-    height: 50vh;
+    height: 60vh;
 }
 
 @media (max-width:500px) {

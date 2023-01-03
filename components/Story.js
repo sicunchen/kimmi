@@ -6,6 +6,7 @@ import Graphic from "./Graphic";
 import { useState } from "react";
 import { useInView } from "framer-motion";
 import configStory from "./config";
+import { motion } from "framer-motion";
 
 const Step = ({ chapter, title, text, setActiveChapter }) => {
   const ref = useRef(null);
@@ -16,10 +17,16 @@ const Step = ({ chapter, title, text, setActiveChapter }) => {
     }
   }, [isInView]);
   return (
-    <div ref={ref} className={styles.section}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.1 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      ref={ref}
+      className={styles.section}
+    >
       <h3 className={styles.sectionHeader}>{`${chapter}. ${title}`}</h3>
       <p>{text}</p>
-    </div>
+    </motion.div>
   );
 };
 
@@ -32,6 +39,8 @@ export default function Story() {
     entry.target.style.height = `${window.innerHeight}px`;
     if (window.innerWidth < 500) {
       setIsMobile(true);
+    } else {
+      setIsMobile(false);
     }
   });
 
