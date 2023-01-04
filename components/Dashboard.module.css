@@ -1,6 +1,9 @@
 .dashboardSection {
   scroll-snap-align: start;
 }
+.mainContainer {
+  height: 100%;
+}
 .header {
   grid-area: header;
   color: rgb(var(--primary));
@@ -9,10 +12,11 @@
   justify-self: center;
   align-self: center;
 }
-.dashboardSection {
+
+.dashboardContent {
+  height: 100%;
   display: grid;
-  grid-auto-columns: 1fr;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 0 3fr;
   grid-template-rows: 1fr 1fr 2fr 3fr;
   grid-template-areas:
     "header header"
@@ -20,19 +24,27 @@
     "sideBar chart"
     "sideBar map";
 }
+.dashboardContent.isOpen {
+  grid-template-columns: 1fr 3fr;
+}
+
 .sideBar {
   grid-area: sideBar;
+  width: 100%;
 }
 .barChartContainer {
   grid-area: chart;
+  justify-self: center;
 }
 .mapContainer {
   grid-area: map;
+  justify-self: center;
 }
 .summaryAndFilterButton {
   grid-area: summaryAndFilterButton;
   display: flex;
   justify-content: space-around;
+  align-items: center;
 }
 .filterButton {
   grid-area: filterButton;
@@ -53,14 +65,28 @@
 }
 
 @media (max-width: 500px) {
-  .dashboardSection {
+  .dashboardContent {
+    position: relative;
+    height: 100%;
     grid-template-columns: 1fr;
-    grid-template-rows: 0.5fr 0.5fr 1fr 2fr 3fr;
+    grid-template-rows: 0.5fr 2fr 1fr 3fr;
     grid-template-areas:
       "header"
-      "filterButton"
-      "summary"
+      "summaryAndFilterButton"
       "chart"
       "map";
+  }
+  .dashboardContent.isOpen {
+    grid-template-columns: 1fr;
+  }
+  .sideBar {
+    position: absolute;
+    height: 100%;
+  }
+
+  .summaryAndFilterButton {
+    grid-area: summaryAndFilterButton;
+    display: flex;
+    flex-direction: column-reverse;
   }
 }

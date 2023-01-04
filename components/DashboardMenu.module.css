@@ -1,0 +1,31 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  background-color: #dfdfdf;
+  width: 95%;
+  margin: 10% auto;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.closeBtn {
+  display: none;
+}
+
+@media (max-width: 500px) {
+  .filters {
+    width: 100%;
+    padding-top: 85px;
+    margin: 0;
+  }
+  .filterHeader {
+    justify-content: space-around;
+  }
+  .closeBtn {
+    display: block;
+    font-size: 2rem;
+  }
+}

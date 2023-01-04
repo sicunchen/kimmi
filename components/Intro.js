@@ -1,18 +1,13 @@
 import Image from "next/image";
 import TransparencyPic from "../public/transparency-bg.png";
 import styles from "./Intro.module.css";
-import useResizeObserver from "@react-hook/resize-observer";
-import { useRef } from "react";
 import { motion } from "framer-motion";
+import SectionContainer from "./SectionContainer";
 
 export default function Intro() {
-  const ref = useRef(null);
-  useResizeObserver(ref, (entry) => {
-    entry.target.style.height = `${window.innerHeight}px`;
-  });
   return (
-    <section className={styles.section} ref={ref}>
-      <div className={styles.container}>
+    <SectionContainer className={styles.introSection}>
+      <div className={styles.content}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -37,6 +32,6 @@ export default function Intro() {
           <Image alt="transparency-bg" src={TransparencyPic} priority />
         </motion.div>
       </div>
-    </section>
+    </SectionContainer>
   );
 }
