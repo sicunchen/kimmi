@@ -14,7 +14,7 @@ import React, { Fragment } from "react";
 import { Point } from "@visx/point";
 import { extent } from "d3-array";
 import { AUTONOMY_PCT, KMPI, METRICS_LABELS } from "../constants/metrics";
-import { motion } from "framer-motion";
+import styles from "./BarChartWithMovingAvgLine.module.css";
 export default function AutomonyMetricBarChart({
   selectedMetric,
   width,
@@ -48,8 +48,8 @@ export default function AutomonyMetricBarChart({
       distanceInServiceKm,
     } = tooltipData;
     return date ? (
-      <div>
-        <h6>{formatDate(date)}</h6>
+      <div className={styles.tooltipContainer}>
+        <h3>{formatDate(date)}</h3>
         <p>moving average: {formatDecimal1(avg)}</p>
         <p>
           {METRICS_LABELS[selectedMetric]}: {formatDecimal1(metric)}
@@ -78,38 +78,13 @@ export default function AutomonyMetricBarChart({
             24;
           const barHeight = yMax - barY;
           return (
-            // <Bar
-            //   key={`bar-${d.date}`}
-            //   x={barX}
-            //   y={barY}
-            //   width={barWidth}
-            //   height={barHeight}
-            //   fill="#00bcee"
-            //   onMouseMove={(e) => {
-            //     const coords = localPoint(e);
-            //     // TooltipInPortal expects coordinates to be relative to containerRef
-            //     // localPoint returns coordinates relative to the nearest SVG, which
-            //     // is what containerRef is set to in this example.
-            //     showTooltip({
-            //       tooltipData: d,
-            //       tooltipTop: coords.y,
-            //       tooltipLeft: barX + barWidth / 2,
-            //     });
-            //   }}
-            //   onMouseOut={hideTooltip}
-            // />
-
-            <motion.rect
-              initial={false}
-              animate={{
-                y: barY,
-                height: barHeight,
-              }}
-              transition={{ duration: 0.5 }}
-              width={barWidth}
-              x={barX}
-              fill="#00bcee"
+            <Bar
               key={`bar-${d.date}`}
+              x={barX}
+              y={barY}
+              width={barWidth}
+              height={barHeight}
+              fill="#00bcee"
               onMouseMove={(e) => {
                 const coords = localPoint(e);
                 // TooltipInPortal expects coordinates to be relative to containerRef
@@ -125,7 +100,7 @@ export default function AutomonyMetricBarChart({
             />
           );
         })}
-        {/* <LinePath
+        <LinePath
           data={data}
           x={(d) => xScale(timeHour.offset(d.date, 12))}
           y={(d) => yScale(d.avg)}
@@ -133,28 +108,7 @@ export default function AutomonyMetricBarChart({
           fill={"transparent"}
           strokeLinecap="round"
           strokeWidth={2}
-        /> */}
-
-        <LinePath
-          data={data}
-          x={(d) => xScale(timeHour.offset(d.date, 12))}
-          y={(d) => yScale(d.avg)}
-        >
-          {({ path }) => {
-            return (
-              <motion.path
-                initial={false}
-                animate={{ d: path(data) }}
-                transition={{ duration: 0.5 }}
-                strokeWidth={2}
-                stroke="#333"
-                fill={"transparent"}
-                strokeLinecap="round"
-              />
-            );
-          }}
-        </LinePath>
-
+        />
         {timelineData.map((d) => {
           const { date, label, tooltip } = d;
           const [start, end] = extent(data, (d) => d.date);

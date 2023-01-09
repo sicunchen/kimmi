@@ -2,12 +2,22 @@ import fetcher from "../utils/fetcher";
 import useSWR from "swr";
 import { timeDay, timeMonth, timeWeek, timeYear } from "d3-time";
 import { timeParse, timeFormat } from "d3-time-format";
-import { flatGroup, flatRollup, sum, index, mean, ascending } from "d3-array";
+import {
+  flatGroup,
+  flatRollup,
+  sum,
+  index,
+  mean,
+  ascending,
+  max,
+  min,
+} from "d3-array";
 import { NORTH_AMERICA } from "../constants/sites";
 import { COMMERCIAL, DRIVER_OUT_READY } from "../constants/shiftCategories";
 import { format } from "d3-format";
 import { SHIFT_FILTER, SITE_FILTER } from "../constants/filters";
 import { AUTONOMY_PCT, IPKM, KMPI } from "../constants/metrics";
+import { useFilter } from "../components/DashboardReducer";
 
 export default function useDailyChartData() {
   const { data, error } = useSWR(
@@ -82,9 +92,11 @@ export function createServiceDatesTemplate(rawDailyAutonomyMetricsData) {
   return serviceDates;
 }
 
-export function filterTimelineData(timelineData, activeFilter, filterValues) {
-  const { mainFilter } = filterValues;
-  if (activeFilter === SHIFT_FILTER && mainFilter === DRIVER_OUT_READY) {
+export function filterTimelineData(
+  timelineData,
+  { activeFilter, selectedShift }
+) {
+  if (activeFilter === SHIFT_FILTER && selectedShift === DRIVER_OUT_READY) {
     return timelineData.filter((d) => d.category === DRIVER_OUT_READY);
   } else {
     return timelineData.filter((d) => d.category === COMMERCIAL);
@@ -92,29 +104,30 @@ export function filterTimelineData(timelineData, activeFilter, filterValues) {
 }
 export function transformDailyAutonomyMetricsData(
   rawDailyAutonomyMetricsData,
-  activeFilter,
-  filterValues,
+  {
+    activeFilter,
+    selectedMetric,
+    selectedSite,
+    selectedShift,
+    interventionType,
+    checkedExclusions,
+    movingAvgWindow,
+  },
   serviceDates
 ) {
   let filteredData;
-  const {
-    interventionType,
-    mainFilter,
-    movingAverageWindow,
-    checkedExclusions,
-    selectedMetric,
-  } = filterValues;
+
   if (activeFilter === SITE_FILTER) {
     filteredData = rawDailyAutonomyMetricsData.filter((d) => {
-      if (mainFilter !== NORTH_AMERICA) {
-        return (d.site === mainFilter) & (d.shiftCategory === COMMERCIAL);
+      if (selectedSite !== NORTH_AMERICA) {
+        return (d.site === selectedSite) & (d.shiftCategory === COMMERCIAL);
       } else {
         return d.shiftCategory === COMMERCIAL;
       }
     });
   } else if (activeFilter === SHIFT_FILTER) {
     filteredData = rawDailyAutonomyMetricsData.filter(
-      (d) => d.shiftCategory === mainFilter
+      (d) => d.shiftCategory === selectedShift
     );
   }
   let metricsData = flatRollup(
@@ -157,7 +170,7 @@ export function transformDailyAutonomyMetricsData(
     (d) => d.date
   ).map(([_, v]) => v);
   // adds weekly moving average as another key
-  metricsData = movingAverage(metricsData, Number(movingAverageWindow));
+  metricsData = movingAverage(metricsData, Number(movingAvgWindow));
   //TODO: ask Alex the purpose of this function
   metricsData = fillInMissingDates(metricsData, serviceDates);
   return metricsData;
@@ -200,14 +213,13 @@ export function movingAverage(data, movingAverageWindow, column = "metric") {
   });
 }
 
-export function updateAutonomyMetric(
-  dateRange,
-  dailyAutonomyMetricsData,
-  selectedMetric
-) {
-  const data = dailyAutonomyMetricsData
+export function filterbyDate(dailyData, dateRange) {
+  return dailyData
     .filter((d) => dateRange[0] <= d.date && d.date <= dateRange[1])
     .filter((d) => d.opacity === 1);
+}
+
+export function updateSummaryMetric(data, selectedMetric) {
   const sumAutonomousKm = formatDecimal1(sum(data, (d) => d.autonomousKm));
   const sumInterventions = sum(data, (d) => d.interventions);
   const sumDistanceKm = formatDecimal1(sum(data, (d) => d.distanceInServiceKm));
@@ -270,4 +282,29 @@ export function multiDateFormat(date) {
       ? fmtMonth
       : fmtYear
   )(date).replace("PM", "pm");
+}
+export function getYDomain(metricsData, selectedMetric) {
+  return [
+    0,
+    selectedMetric === AUTONOMY_PCT
+      ? Math.max(
+          100,
+          max(metricsData, (d) => d.metric),
+          max(metricsData, (d) => d.avg)
+        )
+      : Math.max(
+          max(metricsData, (d) => d.metric),
+          max(metricsData, (d) => d.avg)
+        ),
+  ];
+}
+
+export function getXDomain(metricsData) {
+  return [
+    min(metricsData, (d) => d.date),
+    timeDay.offset(
+      max(metricsData, (d) => d.date),
+      1
+    ),
+  ];
 }

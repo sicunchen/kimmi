@@ -2,7 +2,7 @@
   scroll-snap-align: start;
 }
 .mainContainer {
-  height: 100%;
+  height: 95%;
 }
 .header {
   grid-area: header;
@@ -17,7 +17,7 @@
   height: 100%;
   display: grid;
   grid-template-columns: 0 3fr;
-  grid-template-rows: 1fr 1fr 2fr 3fr;
+  grid-template-rows: 1fr 1fr 2.5fr 3fr;
   grid-template-areas:
     "header header"
     "sideBar summaryAndFilterButton"
@@ -34,16 +34,15 @@
 }
 .barChartContainer {
   grid-area: chart;
-  justify-self: center;
 }
 .mapContainer {
   grid-area: map;
-  justify-self: center;
 }
 .summaryAndFilterButton {
   grid-area: summaryAndFilterButton;
+  padding: 0 var(--space-3);
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 .filterButton {
@@ -62,6 +61,10 @@
 
 .summary {
   grid-area: summary;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
 }
 
 @media (max-width: 500px) {
@@ -69,7 +72,7 @@
     position: relative;
     height: 100%;
     grid-template-columns: 1fr;
-    grid-template-rows: 0.5fr 2fr 1fr 3fr;
+    grid-template-rows: 0.5fr 1fr 2fr 2fr;
     grid-template-areas:
       "header"
       "summaryAndFilterButton"
@@ -88,5 +91,8 @@
     grid-area: summaryAndFilterButton;
     display: flex;
     flex-direction: column-reverse;
+  }
+  .summary {
+    width: 100%;
   }
 }

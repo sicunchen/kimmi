@@ -4,7 +4,7 @@ import styles from "./Story.module.css";
 import Graphic from "./Graphic";
 import { useState } from "react";
 import { useInView, motion } from "framer-motion";
-import configStory from "./config";
+import configStory from "../constants/config";
 import SectionContainer from "./SectionContainer";
 const Step = ({ chapter, title, text, setActiveChapter }) => {
   const ref = useRef(null);

@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
-import states from "./site-states.json";
-import cities from "./site-cities.json";
+import states from "../constants/site-states.json";
+import cities from "../constants/site-cities.json";
 import { scaleThreshold } from "d3-scale";
 import { NORTH_AMERICA, SUN_CITY } from "../constants/sites";
-import RouteMapData from "./routes.json";
+import RouteMapData from "../constants/routes.json";
 
 const colorScale = scaleThreshold()
   .domain([0.1, 0.5, 0.6, 0.7, 0.8])

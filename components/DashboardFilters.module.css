@@ -1,0 +1,29 @@
+.input {
+  margin-bottom: var(--space-2);
+}
+.input:last-child {
+  margin-bottom: 0;
+}
+.input.input:first-child {
+  margin-top: var(--space-2);
+}
+.input > [type="date"] {
+  color: var(--muted);
+  height: 40px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 5px;
+}
+.input {
+  display: flex;
+  align-items: center;
+}
+.input > input {
+  margin-right: var(--space-1);
+}
+.input > input {
+  accent-color: rgb(var(--primary));
+}
+.input > input[type="range"] {
+  width: 60%;
+}

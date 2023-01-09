@@ -1,0 +1,7 @@
+.tooltipContainer {
+  padding: var(--space-1);
+  color: var(--dark);
+}
+.tooltipContainer > p {
+  margin: var(--space-1) auto;
+}

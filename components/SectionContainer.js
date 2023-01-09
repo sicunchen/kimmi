@@ -15,7 +15,7 @@ export default function SectionContainer({ className, children, ...props }) {
   });
   return (
     <section className={className} ref={ref} {...props}>
-      {cloneElement(children, { isMobile: isMobile })}
+      {isMobile ? cloneElement(children, { isMobile: isMobile }) : children}
     </section>
   );
 }
