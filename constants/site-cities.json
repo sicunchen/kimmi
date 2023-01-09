@@ -1,0 +1,9 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {"type":"Feature","properties":{"city":"Arlington, TX","intervention":"1.3 km/I"},"geometry":{"coordinates":[-97.1087,32.7357],"type":"Point"}},
+      {"type":"Feature","properties":{"city":"Grand Rapids, MN","intervention":"3.5 km/I"},"geometry":{"coordinates":[-93.5302,47.2372],"type":"Point"}},
+      {"type":"Feature","properties":{"city":"Ann Arbor, MI","intervention":"2.3 km/I"},"geometry":{"coordinates":[-83.743,42.2808],"type":"Point"}},
+      {"type":"Feature","properties":{"city":"Sun City, AZ","intervention":"? km/I"},"geometry":{"coordinates":[-112.2718,33.5975],"type":"Point"}}
+    ]
+  }

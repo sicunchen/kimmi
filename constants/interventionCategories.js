@@ -1,8 +1,8 @@
 export const INTERVENTIONS_TOTAL = "interventionsTotal";
 export const INTERVENTION_BUTTONS = {
+  interventionsTotal: "Total interventions",
   interventionsRare: "RARE interventions",
   interventionsNonRare: "Non-RARE interventions",
-  interventionsTotal: "Total interventions",
 };
 export const INTERVENTION_MANUALZONE = "interventionsManualOnlyZone";
 export const INTERVENTION_PASSENGERSTOPS = "interventionsPassengerStops";
