@@ -12,7 +12,7 @@ import {
 import { SITE_FILTER, SHIFT_FILTER } from "../constants/filters";
 import { NORTH_AMERICA, SITE_BUTTONS, SUN_CITY } from "../constants/sites";
 import { LIGHT_STYLE } from "../constants/mapStyle";
-import { AUTONOMY_PCT, METRICS_BUTTONS } from "../constants/metrics";
+import { AUTONOMY_PCT, KMPI, METRICS_BUTTONS } from "../constants/metrics";
 import styles from "./DashboardFilters.module.css";
 import { useFilter } from "./DashboardReducer";
 import {
@@ -159,6 +159,8 @@ export const InterventionFilters = () => {
   useEffect(() => {
     if (state.selectedMetric === AUTONOMY_PCT) {
       dispatch(handleChangeInterventionType(""));
+    } else {
+      dispatch(handleChangeInterventionType(INTERVENTIONS_TOTAL));
     }
   }, [state.selectedMetric]);
   return (
