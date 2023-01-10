@@ -1,7 +1,7 @@
 import useResizeObserver from "@react-hook/resize-observer";
 import { cloneElement, useRef, useState } from "react";
 
-export default function SectionContainer({ className, children, ...props }) {
+export default function SectionContainer({ className, children, id }) {
   const ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -14,7 +14,7 @@ export default function SectionContainer({ className, children, ...props }) {
     }
   });
   return (
-    <section className={className} ref={ref} {...props}>
+    <section className={className} ref={ref} id={id}>
       {isMobile ? cloneElement(children, { isMobile: isMobile }) : children}
     </section>
   );

@@ -34,9 +34,11 @@
 }
 .barChartContainer {
   grid-area: chart;
+  padding: 0 var(--space-2);
 }
 .mapContainer {
   grid-area: map;
+  padding: 0 var(--space-2);
 }
 .summaryAndFilterButton {
   grid-area: summaryAndFilterButton;

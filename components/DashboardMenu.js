@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Fragment } from "react";
 import { IoClose } from "react-icons/io5";
 import { SHIFT_FILTER, SITE_FILTER } from "../constants/filters";
 import {
@@ -22,23 +23,13 @@ const FilterSection = ({ title, input }) => {
     </div>
   );
 };
-
-export default function DashboardMenu({ isOpen, setIsMenuOpen }) {
-  const variants = {
-    hidden: { visibility: "hidden" },
-    visible: { visibility: "visible" },
-  };
+const FilterContent = ({ setIsMenuOpen }) => {
+  const { state } = useFilter();
   const toggle = () => {
     setIsMenuOpen(false);
   };
-  const { state } = useFilter();
   return (
-    <motion.div
-      variants={variants}
-      initial="hidden"
-      animate={isOpen ? "visible" : "hidden"}
-      className={styles.filters}
-    >
+    <Fragment>
       <header className={styles.filterHeader}>
         <h1>Filter by</h1>
         <div className={styles.closeBtn} onClick={toggle}>
@@ -65,6 +56,33 @@ export default function DashboardMenu({ isOpen, setIsMenuOpen }) {
         title={"Moving Average Window (2 to 100)"}
         input={<MovingWindowSlider />}
       />
+    </Fragment>
+  );
+};
+const Container = ({ isMobile, isOpen, content }) => {
+  const variants = {
+    hidden: { visibility: "hidden" },
+    visible: { visibility: "visible" },
+  };
+  return !isMobile ? (
+    <motion.div
+      variants={variants}
+      initial="hidden"
+      animate={isOpen ? "visible" : "hidden"}
+      className={styles.filters}
+    >
+      {content}
     </motion.div>
+  ) : (
+    <div className={styles.filters}>{content}</div>
+  );
+};
+export default function DashboardMenu({ isOpen, setIsMenuOpen, isMobile }) {
+  return (
+    <Container
+      isMobile={isMobile}
+      isOpen={isOpen}
+      content={<FilterContent setIsMenuOpen={setIsMenuOpen} />}
+    />
   );
 }
