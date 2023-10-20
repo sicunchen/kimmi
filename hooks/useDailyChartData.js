@@ -1,7 +1,7 @@
-import fetcher from "../utils/fetcher";
-import useSWR from "swr";
-import { timeDay, timeMonth, timeWeek, timeYear } from "d3-time";
-import { timeParse, timeFormat } from "d3-time-format";
+import fetcher from '../utils/fetcher';
+import useSWR from 'swr';
+import { timeDay, timeMonth, timeWeek, timeYear } from 'd3-time';
+import { timeParse, timeFormat } from 'd3-time-format';
 import {
   flatGroup,
   flatRollup,
@@ -11,17 +11,17 @@ import {
   ascending,
   max,
   min,
-} from "d3-array";
-import { NORTH_AMERICA } from "../constants/sites";
-import { COMMERCIAL, DRIVER_OUT_READY } from "../constants/shiftCategories";
-import { format } from "d3-format";
-import { SHIFT_FILTER, SITE_FILTER } from "../constants/filters";
-import { AUTONOMY_PCT, IPKM, KMPI } from "../constants/metrics";
-import { useFilter } from "../components/DashboardReducer";
+} from 'd3-array';
+import { NORTH_AMERICA } from '../constants/sites';
+import { COMMERCIAL, DRIVER_OUT_READY } from '../constants/shiftCategories';
+import { format } from 'd3-format';
+import { SHIFT_FILTER, SITE_FILTER } from '../constants/filters';
+import { AUTONOMY_PCT, IPKM, KMPI } from '../constants/metrics';
+import { useFilter } from '../components/DashboardReducer';
 
 export default function useDailyChartData() {
   const { data, error } = useSWR(
-    "https://myvpkwzce6.us-east-1.awsapprunner.com/interventions?start_date=2022-06-01",
+    'https://kimmi-api.api-sandbox.maymobility.com/interventions?start_date=2022-06-01',
     fetcher
   );
   let rawDailyAutonomyMetricsData;
@@ -185,7 +185,7 @@ export function fillInMissingDates(siteData, serviceDates) {
       lastMovingAvgValue = siteDate.get(serviceDate.date).avg;
     } else {
       dataArray.push({
-        date: serviceDate["date"],
+        date: serviceDate['date'],
         kmpi: 0,
         ipkm: 0,
         autonomyPct: 0,
@@ -198,7 +198,7 @@ export function fillInMissingDates(siteData, serviceDates) {
   return dataArray;
 }
 
-export function movingAverage(data, movingAverageWindow, column = "metric") {
+export function movingAverage(data, movingAverageWindow, column = 'metric') {
   const sortedData = data.sort((a, b) => ascending(a.date, b.date));
 
   // avg over past N days
@@ -239,38 +239,38 @@ export function updateSummaryMetric(data, selectedMetric) {
 }
 
 function formatAutonomyMetric(d) {
-  return isNaN(d) ? "no data" : d == 0 ? "no data" : formatDecimal2(d);
+  return isNaN(d) ? 'no data' : d == 0 ? 'no data' : formatDecimal2(d);
 }
 
 export function formatDate(date) {
-  return timeFormat("%b %e, %Y")(date);
+  return timeFormat('%b %e, %Y')(date);
 }
 
 export function formatDecimal2(num) {
-  return format(".2f")(num);
+  return format('.2f')(num);
 }
 export function formatDecimal1(num) {
-  return format(".1f")(num);
+  return format('.1f')(num);
 }
 export function formatInteger(num) {
-  return format("d")(num);
+  return format('d')(num);
 }
 
 export function formatDatePicker(date) {
-  return timeFormat("%Y-%m-%d")(date);
+  return timeFormat('%Y-%m-%d')(date);
 }
 
 export function parseDatePicker(val) {
-  return timeParse("%Y-%m-%d")(val);
+  return timeParse('%Y-%m-%d')(val);
 }
 
 export function multiDateFormat(date) {
   // define tick formats
-  const fmtHour = timeFormat("%I%p");
-  const fmtDay = timeFormat("%a %e");
-  const fmtWeek = timeFormat("%b %e");
-  const fmtMonth = timeFormat("%b");
-  const fmtYear = timeFormat("%Y");
+  const fmtHour = timeFormat('%I%p');
+  const fmtDay = timeFormat('%a %e');
+  const fmtWeek = timeFormat('%b %e');
+  const fmtMonth = timeFormat('%b');
+  const fmtYear = timeFormat('%Y');
   return (
     timeDay(date) < date
       ? fmtHour
@@ -281,7 +281,7 @@ export function multiDateFormat(date) {
       : timeYear(date) < date
       ? fmtMonth
       : fmtYear
-  )(date).replace("PM", "pm");
+  )(date).replace('PM', 'pm');
 }
 export function getYDomain(metricsData, selectedMetric) {
   return [
