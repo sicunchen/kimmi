@@ -14,13 +14,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  /**
-   * Enable static exports for the App Router.
-   *
-   * @see https://nextjs.org/docs/app/building-your-application/deploying/static-exports
-   */
   output: 'export',
-  basePath: '/kimmi',
 };
 
 module.exports = nextConfig;
